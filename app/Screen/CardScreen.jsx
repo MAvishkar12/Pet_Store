@@ -16,22 +16,22 @@ export default function CartScreen() {
   const removeItem = Store((state) => state.removeItem);
 
   const handleRemove = useCallback(
-    (dog) => {
-      Alert.alert("Remove Item", `Remove ${dog.name} from cart?`, [
+    (pet) => {
+      Alert.alert("Remove Item", `Remove ${pet.name} from cart?`, [
         { text: "Cancel", style: "cancel" },
         {
           text: "Remove",
           style: "destructive",
 
-          onPress: () => removeItem(dog.id),
+          onPress: () => removeItem(pet.id),
         },
       ]);
     },
     [removeItem],
   );
 
-  const total = list.reduce((sum, dog) => {
-    const num = parseInt(dog.price.replace(/[₹,]/g, ""), 10);
+  const total = list.reduce((sum, pet) => {
+    const num = parseInt(pet.price.replace(/[₹,]/g, ""), 10);
     return sum + (isNaN(num) ? 0 : num);
   }, 0);
 
@@ -61,23 +61,23 @@ export default function CartScreen() {
               }}
               showsVerticalScrollIndicator={false}
             >
-              {list.map((dog) => (
-                <View key={dog.id} style={styles.card}>
+              {list.map((pet) => (
+                <View key={pet.id} style={styles.card}>
                   <Image
-                    source={dog.image}
+                    source={pet.image}
                     style={styles.image}
                     resizeMode="cover"
                   />
 
                   <View style={styles.content}>
-                    <Text style={styles.name}>{dog.name}</Text>
-                    <Text style={styles.breed}>{dog.breed}</Text>
-                    <Text style={styles.price}>{dog.price}</Text>
+                    <Text style={styles.name}>{pet.name}</Text>
+                    <Text style={styles.breed}>{pet.breed}</Text>
+                    <Text style={styles.price}>{pet.price}</Text>
                   </View>
 
                   <TouchableOpacity
                     style={styles.removeBtn}
-                    onPress={() => handleRemove(dog)}
+                    onPress={() => handleRemove(pet)}
                     activeOpacity={0.7}
                   >
                     <Text style={styles.removeBtnText}>✕</Text>

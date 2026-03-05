@@ -23,8 +23,10 @@ A mobile app built with React Native + Expo where users can browse pets, add the
 | Expo | Dev tooling & build system |
 | Expo Image Picker | Camera & gallery access |
 | Zustand | Global state (cart store) |
-| React Navigation | Tab  navigation |
-| SafeAreaView | Notch-safe layout | React Native Paper | 
+| React Navigation | Tab navigation |
+| React Hook Form | Form state & validation |
+| SafeAreaView | Notch-safe layout |
+| React Native Paper | UI components |
 
 ---
 
@@ -33,13 +35,13 @@ A mobile app built with React Native + Expo where users can browse pets, add the
 ```
 PetStore/
 ├── app/
-│   ├── Scrrens/
+│   ├── Screens/
 │   │   ├── HomeScreen.jsx          # Home screen — pet listing
 │   │   ├── FormScreen.jsx           # Add your own pet form
 │   │   └── CardScreen.jsx           # Selected Item list
 ├── Store/
-│   └── Store.ts     # zustand Store
-    |___ data.js     # Pet animals Data
+│   └── Store.ts     # Zustand Store
+│   └── data.js      # Pet animals Data
 ├── assets/
 │   └── images/                # Local pet images
 └── README.md
@@ -49,24 +51,24 @@ PetStore/
 
 # Getting Started
 
-# 1. Clone the repo
+## 1. Clone the repo
 
-bash
+```bash
 git clone https://github.com/your-username/pet-store.git
 cd pet-store
+```
 
+## 2. Install dependencies
 
-# 2. Install dependencies
-
-bash
+```bash
 npm install
+```
 
+## 3. Start the dev server
 
-# 3. Start the dev server
-
-bash
+```bash
 npx expo start
-
+```
 
 Scan the QR code with Expo Go on your phone, or press `a` for Android emulator / `i` for iOS simulator.
 
@@ -76,7 +78,7 @@ Scan the QR code with Expo Go on your phone, or press `a` for Android emulator /
 
 The cart is managed using Zustand. When you press Buy on any pet card, that pet gets added to a global list. The cart screen reads from the same list and calculates the total by summing all prices.
 
-
+```ts
 // Store/Store.ts (simplified)
 {
   list: [],
@@ -84,7 +86,9 @@ The cart is managed using Zustand. When you press Buy on any pet card, that pet 
   removeItem: (id) => ...,
   total: computed from list prices
 }
+```
 
+---
 
 # Adding Your Own Pet
 
@@ -96,6 +100,40 @@ On the *Add Pet* screen, fill in:
 - **Photo** — tap to pick from gallery or click with camera
 
 Once submitted, the pet shows up on the home screen and can be added to the cart like any other listing.
+
+---
+
+## Form Handling with React Hook Form
+
+The Add Pet form (`FormScreen.jsx`) uses **React Hook Form** to manage input state, validation, and error messages — replacing manual `useState` per field.
+
+### Why React Hook Form?
+
+- Removes boilerplate — no separate `useState` for each field
+- Validation rules are declared inline on each field
+- Errors are automatically tracked and cleared on correction
+- Only re-renders the changed input, not the entire form
+
+### Install
+
+```bash
+npm install react-hook-form
+```
+
+### How it's used
+
+```
+
+### Validation Rules Applied
+
+| Field | Rules |
+|-------|-------|
+| Name | Required, min 2 chars, max 30 chars |
+| Breed | Required, min 2 chars |
+| Price | Required, numeric only, between ₹100 and ₹1,00,00,000 |
+| Photo | Validated separately via `useState` (not a text input) |
+
+On submit, `handleSubmit(onSubmit)` runs all validations before calling your handler. If any field fails, the form stops and shows inline error messages without any extra logic needed.
 
 ---
 
@@ -121,7 +159,7 @@ image: { uri: result.assets[0].uri }
 - **Buy** button turns grey once the pet is in the cart
 
 ### Add Pet Screen
-- Form with text inputs and an image picker
+- Form powered by React Hook Form with inline validation
 - Validates that all fields are filled before submitting
 - New pet appears instantly on the home screen
 
@@ -145,18 +183,16 @@ These are requested automatically by Expo when the user taps the image picker.
 
 ## Scripts
 
-bash
+```bash
 npx expo start          # Start development server
 npx expo start --clear  # Clear cache and start
 npx expo build          # Build for production
+```
 
-
-
+---
 
 ## Notes
 
 - Prices are stored as strings with the ₹ symbol (e.g. `"₹15,000"`). Strip the symbol and commas before doing any arithmetic for the cart total.
 - The cart state resets when the app is closed since there is no persistent storage. AsyncStorage can be added to keep cart data between sessions.
 - All pet images in the default list are local assets. Only user-added pets use dynamic URIs.
-
-

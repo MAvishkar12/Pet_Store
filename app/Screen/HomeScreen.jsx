@@ -24,29 +24,29 @@ export default function HomeScreen() {
           
           <Text style={styles.header}>Pet Shop</Text>
 
-          {Pets.map((dog) => {
-            const added = isInCart(dog.id);
+          {Pets.map((pet) => {
+            const added = isInCart(pet.id);
             return (
-              <View key={dog.id} style={styles.card}>
+              <View key={pet.id} style={styles.card}>
                 <Image
-                  source={dog.image}
+                  source={pet.image}
                   style={styles.image}
                   resizeMode="cover"
                 />
 
                 <View style={styles.content}>
-                  <Text style={styles.name}>{dog.name}</Text>
-                  <Text style={styles.breed}>{dog.breed}</Text>
-                  <Text style={styles.price}>{dog.price}</Text>
+                  <Text style={styles.name}>{pet.name}</Text>
+                  <Text style={styles.breed}>{pet.breed}</Text>
+                  <Text style={styles.price}>{pet.price}</Text>
                 </View>
 
               
                 <TouchableOpacity
                   style={[styles.buyBtn, added && styles.buyBtnAdded]}
-                  onPress={() => !added && addItem(dog)}
+                  onPress={() => !added && addItem(pet)}
                   activeOpacity={added ? 1 : 0.7}
                 >
-                  <Text style={styles.buyBtnText}>{added ? "✓ Added" : "Buy"}</Text>
+                  <Text style={styles.buyBtnText}>{added ? " Added" : "Buy"}</Text>
                 </TouchableOpacity>
               </View>
             );
