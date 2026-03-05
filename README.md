@@ -1,50 +1,162 @@
-# Welcome to your Expo app 👋
+# PetStore — React Native Expo App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A mobile app built with React Native + Expo where users can browse pets, add their own listings, and manage a shopping cart with a live total.
 
-## Get started
 
-1. Install dependencies
 
-   ```bash
-   npm install
-   ```
+#What This App Does
 
-2. Start the app
+- Browse a list of pets (dogs, cats, birds, rabbits, fish)
+- Add your own pet with a name, breed, price, and photo
+- Pick a photo from your gallery or take one with your camera
+- Tap Buy to add any pet to your cart
+- View your cart with a running total amount
+- Remove items from the cart anytime
 
-   ```bash
-   npx expo start
-   ```
+---
 
-In the output, you'll find options to open the app in a
+#Tech Stack
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+| Tool | Purpose |
+|------|---------|
+| React Native | Core mobile framework |
+| Expo | Dev tooling & build system |
+| Expo Image Picker | Camera & gallery access |
+| Zustand | Global state (cart store) |
+| React Navigation | Tab  navigation |
+| SafeAreaView | Notch-safe layout | React Native Paper | 
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+---
 
-## Get a fresh project
+# Folder Structure
 
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+PetStore/
+├── app/
+│   ├── Scrrens/
+│   │   ├── HomeScreen.jsx          # Home screen — pet listing
+│   │   ├── FormScreen.jsx           # Add your own pet form
+│   │   └── CardScreen.jsx           # Selected Item list
+├── Store/
+│   └── Store.ts     # zustand Store
+    |___ data.js     # Pet animals Data
+├── assets/
+│   └── images/                # Local pet images
+└── README.md
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+# Getting Started
 
-To learn more about developing your project with Expo, look at the following resources:
+# 1. Clone the repo
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+bash
+git clone https://github.com/your-username/pet-store.git
+cd pet-store
 
-## Join the community
 
-Join our community of developers creating universal apps.
+# 2. Install dependencies
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+bash
+npm install
+
+
+# 3. Start the dev server
+
+bash
+npx expo start
+
+
+Scan the QR code with Expo Go on your phone, or press `a` for Android emulator / `i` for iOS simulator.
+
+---
+
+## How the Cart Works
+
+The cart is managed using Zustand. When you press Buy on any pet card, that pet gets added to a global list. The cart screen reads from the same list and calculates the total by summing all prices.
+
+
+// Store/Store.ts (simplified)
+{
+  list: [],
+  addItem: (item) => ...,
+  removeItem: (id) => ...,
+  total: computed from list prices
+}
+
+
+# Adding Your Own Pet
+
+On the *Add Pet* screen, fill in:
+
+- **Name** — e.g. Bruno
+- **Breed** — e.g. Husky
+- **Price** — e.g. ₹12,000
+- **Photo** — tap to pick from gallery or click with camera
+
+Once submitted, the pet shows up on the home screen and can be added to the cart like any other listing.
+
+---
+
+## Image Handling
+
+React Native requires static images to be loaded with `require()` at build time. For user-uploaded images (picked from gallery or camera), Expo Image Picker returns a local URI which is passed directly into the `<Image source={{ uri: ... }} />` component.
+
+```ts
+// Static asset
+image: require('../../assets/images/dog1.jpg')
+
+// User picked image
+image: { uri: result.assets[0].uri }
+```
+
+---
+
+## Screens Overview
+
+### Home Screen
+- Lists all available pets in card format
+- Each card shows photo, name, breed, and price
+- **Buy** button turns grey once the pet is in the cart
+
+### Add Pet Screen
+- Form with text inputs and an image picker
+- Validates that all fields are filled before submitting
+- New pet appears instantly on the home screen
+
+### Cart Screen
+- Shows all added pets
+- Displays individual prices and a grand total at the bottom
+- Option to remove individual items
+
+---
+
+## Permissions Required
+
+| Permission | Reason |
+|------------|--------|
+| Camera | Taking a photo of your pet |
+| Media Library | Picking an existing image |
+
+These are requested automatically by Expo when the user taps the image picker.
+
+---
+
+## Scripts
+
+bash
+npx expo start          # Start development server
+npx expo start --clear  # Clear cache and start
+npx expo build          # Build for production
+
+
+
+
+## Notes
+
+- Prices are stored as strings with the ₹ symbol (e.g. `"₹15,000"`). Strip the symbol and commas before doing any arithmetic for the cart total.
+- The cart state resets when the app is closed since there is no persistent storage. AsyncStorage can be added to keep cart data between sessions.
+- All pet images in the default list are local assets. Only user-added pets use dynamic URIs.
+
+
